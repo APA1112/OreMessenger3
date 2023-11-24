@@ -61,6 +61,7 @@ if (isset($_POST['delete'])) {
             <thead>
             <tr>
                 <th>Username</th>
+                <th>Sender</th>
                 <th>Message body</th>
                 <th></th>
             </tr>
@@ -68,13 +69,14 @@ if (isset($_POST['delete'])) {
             <tbody>
             <?php
 
-            $messages = $db->prepare('SELECT * FROM message WHERE username=:user');
+            $messages = $db->prepare('SELECT * FROM message WHERE recipient=:user');
             $messages->bindValue(':user', $username);
             $messages->setFetchMode(PDO::FETCH_ASSOC);
             $messages->execute();
 
             foreach ($messages as $message) {
                 echo "<tr>";
+                echo "<td>" . htmlentities($message['recipient']) . "</td>";
                 echo "<td>" . htmlentities($message['username']) . "</td>";
                 echo "<td>" . nl2br(htmlentities($message['body'])) . "</td>";
                 echo "<td>";
