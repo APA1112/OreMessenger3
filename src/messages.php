@@ -34,7 +34,14 @@ if (isset($_POST['delete'])) {
     header('Location: messages.php');
     die();
 }
-//var_dump($_POST);
+if (isset($_POST['read'])) {
+    $query = $db->prepare('UPDATE message SET unread=0 WHERE id=:id AND recipient=:user');
+    $query->bindValue(':id', $_POST['read'], PDO::PARAM_INT);
+    $query->bindValue(':user', $username);
+    $query->execute();
+    header('Location: messages.php');
+    die();
+}
 ?>
 <!doctype html>
 <html lang="es">
@@ -44,46 +51,45 @@ if (isset($_POST['delete'])) {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Browse messages - <?= htmlentities($user['fullname']) ?></h1>
-    <form method="post">
-        <table>
-            <thead>
-            <tr>
-                <th>Username</th>
-                <th>Sender</th>
-                <th>Message body</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php
+<h1>Browse messages - <?= htmlentities($user['fullname']) ?></h1>
+<form method="post">
+    <table>
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Sender</th>
+            <th>Message body</th>
+            <th>Management</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
 
-            $messages = $db->prepare('SELECT * FROM message WHERE recipient=:user');
-            $messages->bindValue(':user', $username);
-            $messages->setFetchMode(PDO::FETCH_ASSOC);
-            $messages->execute();
+        $messages = $db->prepare('SELECT * FROM message WHERE recipient=:user');
+        $messages->bindValue(':user', $username);
+        $messages->setFetchMode(PDO::FETCH_ASSOC);
+        $messages->execute();
 
-            foreach ($messages as $message) {
-                echo "<tr>";
-                echo "<td>" . htmlentities($message['recipient']) . "</td>";
-                echo "<td>" . htmlentities($message['username']) . "</td>";
-                if ($message['unread']==1){
-                    echo "<td class='unread'>" . nl2br(htmlentities($message['body'])) . "</td>";
-                } else {
-                    echo "<td>" . nl2br(htmlentities($message['body'])) . "</td>";
-                }
-                echo "<td>";
-                echo '<button type="submit" name="delete" value="' .
-                    $message['id'] .
-                    '">Delete</button>';
-                echo "</td>";
-                echo "</tr>";
+        foreach ($messages as $message) {
+            echo "<tr>";
+            echo "<td>" . htmlentities($message['recipient']) . "</td>";
+            echo "<td>" . htmlentities($message['username']) . "</td>";
+            if ($message['unread'] == 1) {
+                echo "<td class='unread'>" . nl2br(htmlentities($message['body'])) . "</td>";
+            } else {
+                echo "<td>" . nl2br(htmlentities($message['body'])) . "</td>";
             }
-            ?>
-            </tbody>
-        </table>
-        <button type="submit" name="logout">Log out</button>
-        <a href="new.php">New message</a>
-    </form>
+            echo "<td>";
+            echo '<button type="submit" name="delete" value="' . $message['id'] . '">Delete</button>';
+            echo '<button type="button" name="read" value="' . $message['id'] . '">Mark as read</button>';
+            echo "</td>";
+            echo "</tr>";
+        }
+        ?>
+        </tbody>
+    </table>
+    <button type="submit" name="logout">Log out</button>
+    <a href="new.php">New message</a>
+</form>
 </body>
 </html>
