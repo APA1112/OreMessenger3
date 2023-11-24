@@ -41,18 +41,7 @@ if (isset($_POST['delete'])) {
 <head>
     <meta charset="UTF-8">
     <title>Browse messages</title>
-    <style>
-        table {
-            border: 1px solid black;
-            border-collapse: collapse;
-            margin-top: 1em;
-            margin-bottom: 1em;
-        }
-
-        td, th {
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Browse messages - <?= htmlentities($user['fullname']) ?></h1>
@@ -78,7 +67,11 @@ if (isset($_POST['delete'])) {
                 echo "<tr>";
                 echo "<td>" . htmlentities($message['recipient']) . "</td>";
                 echo "<td>" . htmlentities($message['username']) . "</td>";
-                echo "<td>" . nl2br(htmlentities($message['body'])) . "</td>";
+                if ($message['unread']==1){
+                    echo "<td class='unread'>" . nl2br(htmlentities($message['body'])) . "</td>";
+                } else {
+                    echo "<td>" . nl2br(htmlentities($message['body'])) . "</td>";
+                }
                 echo "<td>";
                 echo '<button type="submit" name="delete" value="' .
                     $message['id'] .
