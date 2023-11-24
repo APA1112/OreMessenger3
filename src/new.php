@@ -22,9 +22,10 @@ if (!$user) {
 
 // Process form
 if (isset($_POST['new'])) {
-    $insert = $db->prepare('INSERT INTO message (body, username) VALUES (:body, :user)');
+    $insert = $db->prepare('INSERT INTO message (body, username, recipient) VALUES (:body, :user, :recipient)');
     $insert->bindValue(':body', $_POST['body']);
     $insert->bindValue(':user', $username);
+    $insert->bindValue(':recipient', $_POST['recipient']);
     $insert->execute();
     header('Location: messages.php');
     die();
@@ -37,13 +38,27 @@ if (isset($_POST['new'])) {
     <title>New message</title>
 </head>
 <body>
-    <h1>New message - <?= htmlentities($user['fullname']) ?></h1>
-    <form method="post">
-        <label for="text">Message body:</label><br/>
-        <textarea id="text" name="body" rows="10" cols="50"></textarea>
-        <br />
+<h1>New message - <?= htmlentities($user['fullname']) ?></h1>
+<form method="post" class="container">
+    <div>
+        <label for="select">Recipient: </label>
+        <select id="select" name="recipient">
+            <?php
+            $users = $db->prepare('SELECT username FROM person ORDER BY username ASC');
+            $users->setFetchMode(PDO::FETCH_ASSOC);
+            $users->execute();
+            foreach ($users as $user) {
+                echo '<option value="' . $user['username'] . '">' . $user['username'] . '</option>';
+            }
+            ?>
+        </select>
+        <label for="text">Message body:</label>
+    </div>
+    <textarea id="text" name="body" rows="10" cols="50"></textarea>
+    <div>
         <button type="submit" name="new">Create message</button>
         <a href="messages.php">&lt; Return to message list</a>
-    </form>
+    </div>
+</form>
 </body>
 </html>
