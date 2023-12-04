@@ -36,6 +36,7 @@ if (isset($_POST['new'])) {
 <head>
     <meta charset="UTF-8">
     <title>New message</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <h1>New message - <?= htmlentities($user['fullname']) ?></h1>

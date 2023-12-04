@@ -27,7 +27,7 @@ if (isset($_POST['logout'])) {
     die();
 }
 if (isset($_POST['delete'])) {
-    $query = $db->prepare('DELETE FROM message WHERE id=:id AND username=:user');
+    $query = $db->prepare('DELETE FROM message WHERE id=:id AND recipient=:user');
     $query->bindValue(':id', $_POST['delete'], PDO::PARAM_INT);
     $query->bindValue(':user', $username);
     $query->execute();
@@ -75,13 +75,13 @@ if (isset($_POST['read'])) {
             echo "<td>" . htmlentities($message['recipient']) . "</td>";
             echo "<td>" . htmlentities($message['username']) . "</td>";
             if ($message['unread'] == 1) {
-                echo "<td class='unread'>" . nl2br(htmlentities($message['body'])) . "</td>";
+                echo "<td><a href='view.php' class='unread'>" . nl2br(htmlentities($message['body'])) . "</a></td>";
             } else {
-                echo "<td>" . nl2br(htmlentities($message['body'])) . "</td>";
+                echo "<td><a href='view.php'>" . nl2br(htmlentities($message['body'])) . "</a></td>";
             }
             echo "<td>";
             echo '<button type="submit" name="delete" value="' . $message['id'] . '">Delete</button>';
-            echo '<button type="button" name="read" value="' . $message['id'] . '">Mark as read</button>';
+            echo '<button type="submit" name="read" value="' . $message['id'] . '">Mark as read</button>';
             echo "</td>";
             echo "</tr>";
         }
