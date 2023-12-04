@@ -75,9 +75,9 @@ if (isset($_POST['read'])) {
             echo "<td>" . htmlentities($message['recipient']) . "</td>";
             echo "<td>" . htmlentities($message['username']) . "</td>";
             if ($message['unread'] == 1) {
-                echo "<td><a href='view.php' class='unread'>" . nl2br(htmlentities($message['body'])) . "</a></td>";
+                echo "<td><a href='view.php?id=".$message['id']."' class='unread'>" . nl2br(htmlentities($message['body'])) . "</a></td>";
             } else {
-                echo "<td><a href='view.php'>" . nl2br(htmlentities($message['body'])) . "</a></td>";
+                echo "<td><a href='view.php?id=".$message['id'].">" . nl2br(htmlentities($message['body'])) . "</a></td>";
             }
             echo "<td>";
             echo '<button type="submit" name="delete" value="' . $message['id'] . '">Delete</button>';

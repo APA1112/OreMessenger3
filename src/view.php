@@ -1,14 +1,22 @@
 <?php
 require_once 'config.php';
 global $db;
+global $id;
 
 session_start();
 if (!isset($_SESSION['username'])) {
     header('Location: index.php');
     die();
 }
+if (isset($_GET['id'])){
+    $id = $_GET['id'];
+}
 $username = $_SESSION['username'];
 
+$messages = $db->prepare('SELECT * FROM message WHERE id=:id');
+$messages->bindValue(':id', $id);
+$messages->setFetchMode(PDO::FETCH_ASSOC);
+$messages->execute();
 ?>
 <!doctype html>
 <html lang="es">
@@ -18,9 +26,13 @@ $username = $_SESSION['username'];
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<p></p>
+<?php
+foreach ($messages as $message){
+    echo "<p>". $message['body']."</p>";
+}
+?>
 <div>
-    <a href="new.php">Reply message</a>
+    <a href="new.php?recipient=">Reply message</a>
     <a href="messages.php">&lt; Return to message list</a>
 </div>
 </body>
