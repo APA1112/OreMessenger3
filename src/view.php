@@ -30,10 +30,10 @@ $messages->execute();
 foreach ($messages as $message){
     echo "<p>". $message['body']."</p>";
 }
+echo "<div>";
+echo "<a href='new.php?id=".$id."'>Reply message</a>";
+echo "<a href='messages.php'>&lt; Return to message list</a>";
+echo "</div>";
 ?>
-<div>
-    <a href="new.php?recipient=">Reply message</a>
-    <a href="messages.php">&lt; Return to message list</a>
-</div>
 </body>
 </html>
