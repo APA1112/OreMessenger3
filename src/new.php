@@ -45,11 +45,20 @@ if (isset($_POST['new'])) {
         <label for="select">Recipient: </label>
         <select id="select" name="recipient">
             <?php
-            $users = $db->prepare('SELECT username FROM person ORDER BY username ASC');
-            $users->setFetchMode(PDO::FETCH_ASSOC);
-            $users->execute();
-            foreach ($users as $user) {
-                echo '<option value="' . $user['username'] . '">' . $user['username'] . '</option>';
+            if (!$_GET['id']) {
+                $users = $db->prepare('SELECT username FROM person ORDER BY username ASC');
+                $users->setFetchMode(PDO::FETCH_ASSOC);
+                $users->execute();
+                foreach ($users as $user) {
+                    echo '<option value="' . $user['username'] . '">' . $user['username'] . '</option>';
+                }
+            } else {
+                $recipient = $db->prepare('SELECT username FROM message WHERE id=:id');
+                $recipient->bindValue(':id', $_GET['id']);
+                $recipient->setFetchMode(PDO::FETCH_ASSOC);
+                $recipient->execute();
+                $receptor = $recipient->fetch();
+                echo '<option value="' . $receptor['username'] . '">' . $receptor['username'] . '</option>';
             }
             ?>
         </select>
